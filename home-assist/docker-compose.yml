@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    ports:
+        - "9000:9000/tcp"
+    restart: always
+    environment:
+        - PORTAINER_HOST=0.0.0.0
+        - PORTAINER_PORT=9000
+        - TZ=America/Sao_Paulo
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - /opt/portainer_data:/data
+
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    ports:
+        - "8123:8123"
+    environment:
+        - TZ=America/Sao_Paulo
+    volumes:
+        - /opt/home-assistant/config:/config
+        - /etc/localtime:/etc/localtime:ro
+        - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
